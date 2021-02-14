@@ -1,10 +1,21 @@
 class BmiController < ApplicationController
   def index
+    @bmi_calculator = BmiCalculator.new
   end
   def result
-    h = params[:height].to_f / 100
-    w = params[:weight].to_f
-    @bmi = (w / (h*h)).round(2)
-    render :index
+    @bmi_calculator= BmiCalculator.new(bmi_calculator_params)
+    
+    if @bmi_calculator.valid?
+      @bmi = @bmi_calculator.perform
+      render :index
+    else
+      render :index      
+    end    
+  end
+
+  private
+
+  def bmi_calculator_params
+    params.require(:bmi_calculator).permit(:body_height, :body_weight)
   end
 end
